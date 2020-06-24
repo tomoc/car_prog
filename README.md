@@ -1,2 +1,2 @@
-# car_prog
+# Sample Code
 program of RCcar
