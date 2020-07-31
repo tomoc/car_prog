@@ -308,7 +308,7 @@ try:
         ####### Kudou control ######
         if dousa == 1:
             Accel(100)
-            Steer(0)
+            Steer(0,1)
             comment = '直進中'
         elif dousa == 2:
             Accel(100)
