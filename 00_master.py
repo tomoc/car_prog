@@ -57,10 +57,10 @@ C_LONG = 170    #initial100
 R_SHORT = 15    #initial50
 R_LONG = 140     #initial100
 ERR_DIS = 500   #20190907
-C = []
+FR = []
 L = []
 R = []
-LL = []
+RL = []
 RR = []
 steering = []
 front = []
@@ -75,7 +75,7 @@ dousa_log = []
 time_log = []
 joken = 0
 dousa = 0 
-
+STOPDIS = 10
 #kaunta
 countinit = 0 #20190920
 
@@ -361,6 +361,16 @@ try:
             print("escape roop")
             break#抜ける
 
+        #距離記録用
+        FR.append(FRdis)
+        L.append(L_dis)
+        R.append(R_dis)
+        RL.append(R_L_dis)
+        RR.append(R_R_dis)
+        comment2.append(comment)
+        joken_log.append(joken)#20190813
+        dousa_log.append(dousa)#20190813
+        time_log.append(time.time()-start_time)
             # in_key = input()
         # if in_key == 'k':
         #     turn90(FRdis,-1)
@@ -387,14 +397,20 @@ try:
         #     np.savetxt('/home/pi/code/record_data.csv', d, fmt='%.3e')
         #     break
         #距離データを配列に記録
-        d = np.vstack([d,[time.time()-start_time, FRdis, R_dis, L_dis,R_R_dis,R_L_dis,comment,joken,dousa]])
+        # d = np.vstack([d,[time.time()-start_time, FRdis, R_dis, L_dis,R_R_dis,R_L_dis,comment,joken,dousa]])
         #距離を表示
         print('Fr:{0:.1f} , FrRH:{1:.1f} , FrLH:{2:.1f}'.format(FRdis,RHdis,LHdis))
         time.sleep(0.05)
 
 except KeyboardInterrupt:
     print('stop!')
-    np.savetxt('/home/pi/code/record_data.csv', d, fmt='%.3e')
+    data = [np.array(FR),np.array(L),np.array(R),np.array(RL),np.array(RR),np.array(comment2),np.array(joken_log),np.array(dousa_log),np.array(time_log)]
+    data2 = np.array(data).T.tolist()
+    # np.savetxt('/home/pi/code/record_data.csv', d, fmt='%.3e')
+    with open('/home/pi/code/record_data.csv','w') as f:
+        writer = csv.writer(f)
+    writer.writerow(['FR','L','R','RL','RR','comment','joken','dousa','time'])
+    writer.writerows(data2)
     togikai_drive.Accel(PWM_PARAM,pwm,time,0)
     togikai_drive.Steer(PWM_PARAM,pwm,time,0)
     GPIO.cleanup()
