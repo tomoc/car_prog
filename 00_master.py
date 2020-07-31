@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.append('/home/pi/togikai/togikai_function/')
+# sys.path.append('/home/pi/togikai/togikai_function/')
+sys.path.append('D:/github/togikai_prog/togikai/togikai_function')
 import togikai_drive
 import togikai_ultrasonic
 import signal
@@ -54,6 +55,11 @@ time.sleep(1)
 #開始時間
 start_time = time.time()
 
+#TODO
+#必要な操作
+#障害物、壁が迫ってきている場合は原則してカーブに備える。
+# 左右間のセンサー距離で判定
+
 def turn90(FRdis,direction):
     #direction 1Right -1left
     #Steer150 min radius 50cm
@@ -75,8 +81,12 @@ try:
         FRdis = togikai_ultrasonic.Mesure(GPIO,time,15,26)
         #FrLHセンサ距離
         LHdis = togikai_ultrasonic.Mesure(GPIO,time,13,24)
-        # #FrRHセンサ距離
+        #FrRHセンサ距離
         RHdis = togikai_ultrasonic.Mesure(GPIO,time,32,31)
+        #RrLHセンサ距離
+        R_LHdis = togikai_ultrasonic.Mesure(GPIO,time,35,37)
+        #RrRHセンサ距離
+        R_RHdis = togikai_ultrasonic.Mesure(GPIO,time,36,38)
 
         #togikai_drive.Accel(PWM_PARAM,pwm,time,40)
         #togikai_drive.Steer(PWM_PARAM,pwm,time,0)
