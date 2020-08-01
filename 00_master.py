@@ -10,6 +10,7 @@ import Adafruit_PCA9685
 import time
 import numpy as np
 import pandas as pd
+import csv
 
 # GPIOピン番号の指示方法
 GPIO.setmode(GPIO.BOARD)
@@ -76,6 +77,7 @@ time_log = []
 joken = 0
 dousa = 0 
 STOPDIS = 10
+STOPTIME = 30
 #kaunta
 countinit = 0 #20190920
 
@@ -312,7 +314,7 @@ try:
             comment = '直進中'
         elif dousa == 2:
             Accel(100)
-            if LL_RR_cj == 1 and LL_dis < LLDIS: #20190922
+            if LR_cj == 1 and R_L_dis < LLDIS: #20190922
                 Steer(50,1)
                 comment = '左旋回steer50'
             else:
@@ -320,7 +322,7 @@ try:
                 comment = '左旋回steer100' 
         elif dousa == 3:
             Accel(tyuu)
-            if LL_RR_cj == 1 and RR_dis < RRDIS: #20190922
+            if LR_cj == 1 and R_R_dis < RRDIS: #20190922
                 Steer(50,-1)
                 comment = '右旋回steer-50'
             else:
@@ -328,7 +330,7 @@ try:
                 comment = '右旋回steer-100'
         elif dousa == 6:
             back(100)
-            Steer(0)
+            Steer(0,-1)
             comment = 'バック'
             time.sleep(1.0)#I have no idea, this waiting time necessity.Initial0.2
         elif dousa == 7:
@@ -343,7 +345,7 @@ try:
             comment = '左バック'
         else:
             Accel(100)
-            Steer(0)
+            Steer(0,1)
             comment = '直進中'###### countinit ######
 
         if countinit <= 7:
@@ -399,7 +401,7 @@ try:
         #距離データを配列に記録
         # d = np.vstack([d,[time.time()-start_time, FRdis, R_dis, L_dis,R_R_dis,R_L_dis,comment,joken,dousa]])
         #距離を表示
-        print('Fr:{0:.1f} , FrRH:{1:.1f} , FrLH:{2:.1f}'.format(FRdis,RHdis,LHdis))
+        print('Fr:{0:.1f} , FrRH:{1:.1f} , FrLH:{2:.1f}'.format(FRdis,R_dis,L_dis))
         time.sleep(0.05)
 
 except KeyboardInterrupt:
@@ -409,8 +411,8 @@ except KeyboardInterrupt:
     # np.savetxt('/home/pi/code/record_data.csv', d, fmt='%.3e')
     with open('/home/pi/code/record_data.csv','w') as f:
         writer = csv.writer(f)
-    writer.writerow(['FR','L','R','RL','RR','comment','joken','dousa','time'])
-    writer.writerows(data2)
+        writer.writerow(['FR','L','R','RL','RR','comment','joken','dousa','time'])
+        writer.writerows(data2)
     togikai_drive.Accel(PWM_PARAM,pwm,time,0)
     togikai_drive.Steer(PWM_PARAM,pwm,time,0)
     GPIO.cleanup()
