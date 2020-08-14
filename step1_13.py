@@ -202,59 +202,59 @@ while True :
 #########################
 ###### joken start ######
     if L_dis > L_LONG and C_dis > C_LONG and R_dis > R_LONG:
-        joken = 1
+        joken = 1#すべてＯＫ
     elif L_dis > L_LONG and C_dis > C_LONG and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 2
+        joken = 2#右前がR_long以下
     elif L_dis > L_LONG and C_dis > C_LONG and R_dis < R_SHORT:
-        joken = 3
+        joken = 3#右前の距離がR_short以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis > C_LONG and R_dis > R_LONG:
-        joken = 4
+        joken = 4#左前がlong以下
     elif L_dis < L_SHORT and C_dis > C_LONG and R_dis > R_LONG:
-        joken = 5
+        joken = 5#左前がshort以下
     elif L_dis > L_LONG and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis > R_LONG:
-        joken = 6
+        joken = 6#前がlong以下
     elif L_dis > L_LONG and C_dis < C_SHORT and R_dis > R_LONG:
-        joken = 7
+        joken = 7#前がshot以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis > C_LONG and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 8
+        joken = 8#左がlog以下で右もlong以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis > C_LONG and R_dis < R_SHORT:
-        joken = 9
+        joken = 9#左がlog以下で右がshort以下
     elif L_dis < L_SHORT and C_dis > C_LONG and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 10
+        joken = 10#左がshort以下で右がlong以下
     elif L_dis < L_SHORT and C_dis > C_LONG and R_dis < R_SHORT:
-        joken = 11
+        joken = 11#左右がshort以下
     elif L_dis > L_LONG and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 12
+        joken = 12#前がlong以下右がlong以下
     elif L_dis > L_LONG and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis < R_SHORT:
-        joken = 13
+        joken = 13#\#前がlong以下右がshort以下
     elif L_dis > L_LONG and C_dis < C_SHORT and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 14
+        joken = 14#前がshort以下右がlong以下
     elif L_dis > L_LONG and C_dis < C_SHORT and R_dis < R_SHORT:
-        joken = 15
+        joken = 15#前がlong以下右がshort以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 16
+        joken = 16#すべてlong以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis < R_SHORT:
-        joken = 17
+        joken = 17#右がshort以下他long以下
     elif L_dis < L_SHORT and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 18
+        joken = 18#左がshort以下他がlong以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis < C_SHORT and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 19
+        joken = 19#前がshort以下他がlong以下
     elif L_dis < L_SHORT and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis < R_SHORT:
-        joken = 20
+        joken = 20#左、右がshort以下前がlong以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis < C_SHORT and R_dis < R_SHORT:
-        joken = 21
+        joken = 21#前、右がshort以下、左がlong以下
     elif L_dis < L_SHORT and C_dis < C_SHORT and R_dis <= R_LONG and R_dis >= R_SHORT:
-        joken = 22
+        joken = 22#左、前がshort以下、右がlong以下
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis > R_LONG:
-        joken = 23
+        joken = 23#左、前がlong以下、RがOK
     elif L_dis < L_SHORT and C_dis <= C_LONG and C_dis >= C_SHORT and R_dis > R_LONG:
-        joken = 24
+        joken = 24#左がshort以下、前がlong以下、右がOK
     elif L_dis <= L_LONG and L_dis >= L_SHORT and C_dis < C_SHORT and R_dis > R_LONG:
-        joken = 25
+        joken = 25#左がlomg以下、前がshort以下、右がOK
     elif L_dis < L_SHORT and C_dis < C_SHORT and R_dis > R_LONG:
-        joken = 26
+        joken = 26#左がshort以下、前がshort以下、右がOK
     elif L_dis < L_SHORT and C_dis < C_SHORT and R_dis < R_SHORT:
-        joken = 27
+        joken = 27#すべてshort以下
     else:
         joken = 99
 
