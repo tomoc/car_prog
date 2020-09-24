@@ -49,17 +49,19 @@ togikai_drive.Accel(PWM_PARAM,pwm,time,0)
 togikai_drive.Steer(PWM_PARAM,pwm,time,0)
 
 #定義
-L_short = 50    #initial50
+L_short = 30    #initial50
 L_mid = 60
 L_long = 150     #initial100
-C_short = 50    #initial50
+C_short = 30    #initial50
 C_mid = 70
 C_long = 170    #initial100
-R_short = 50    #initial50
+R_short = 30    #initial50
 R_mid = 60
 R_long = 140     #initial100
 ERR_DIS = 500   #20190907
 action=0
+
+keep_dist = 50
 
 # magarisugiru
 #massukguni recover dekinaikoto
@@ -90,6 +92,12 @@ def Steer(ang,direction):#1:Right,-1:left
     togikai_drive.Accel(PWM_PARAM,pwm,time,40)
     togikai_drive.Steer(PWM_PARAM,pwm,time,ang*direction)
 
+def keep_dis(RLdis):
+    dis=RLdis-keep_dis
+    steer_ang=dis/keep_dis*100
+    return steer_ang
+
+
 #ここから走行用プログラム
 try:
     while True:
@@ -104,31 +112,68 @@ try:
         #RrRHセンサ距離
         R_R_dis = togikai_ultrasonic.Mesure(GPIO,time,36,38)
 
-
+        if R_L_dis<50-1:
+            action = 5#dummy
+            ang = abs(keep_dis(R_L_dis))
+            Steer(ang,1)
+        elif R_L_dis>50+1:
+            action = 5#dummy
+            ang = abs(keep_dis(R_L_dis))
+            Steer(ang,-1)
+        else:
+            action = 0
 
         #togikai_drive.Accel(PWM_PARAM,pwm,time,40)
         #togikai_drive.Steer(PWM_PARAM,pwm,time,0)
 
-        if FRdis>C_mid and R_dis>R_short and L_dis>L_short:
-            #直進
-            action=0
-        elif FRdis<C_mid and L_dis<L_short:
-            action=3
+
         
-        elif FRdis<C_mid and L_dis<L_short and R_dis>R_mid:
-            #カーブがあるとき右まわり
-            action=1
-        elif FRdis<C_mid and L_dis>L_mid and R_dis<R_short:
-            #right side of wall
-            action=2
-        elif action==1 and FRdis<C_mid and L_dis>R_dis:
-            #右からの左まわ
-            action=2
-        elif action ==1 and FRdis>C_mid and L_dis>L_short:
-            action=0
-        elif action==2 and FRdis<C_mid and L_dis<R_dis:
-            #右からの左まわ
-            action=1
+        # #ver2書きかけ
+        # if FRdis>C_mid:
+        #     if L_dis<=L_short and R_dis>R_short:#左が閾値未満
+        #         action = 11#右旋回
+        #     elif L_dis>L_short and R_dis<=R_short:#右が閾値未満
+        #         action =21#左旋回
+        #     elif L_dis>L_short and R_dis>R_short:
+        #         action=0
+        #     elif L_dis<=L_short and R_dis<=R_short:#両方とも狭いときは距離が長いほうに曲がる
+        #         if L_dis<R_dis:
+        #             action = 12
+        #         else:
+        #             action = 22
+
+        # if FRdis<C_mid:#まえとの距離がみじかいとき旋回しろ大
+        #     if L_dis<=L_short and R_dis<=R_short:
+        #             action=4#後退
+        #     elif L_dis<=L_short and R_dis>R_short:#左が閾値未満
+        #         action = 1#右旋回
+        #     elif L_dis>L_short and R_dis<=R_short:#右が閾値未満
+        #         action =2#左旋回
+        #     elif L_dis>L_short and R_dis>R_short:
+        #         action=0
+
+
+        #ver1
+        # if FRdis>C_mid and R_dis>R_short and L_dis>L_short:
+        #     #直進
+        #     action=0
+        # elif FRdis<C_mid and L_dis<L_short:
+        #     action=3
+        
+        # elif FRdis<C_mid and L_dis<L_short and R_dis>R_mid:
+        #     #カーブがあるとき右まわり
+        #     action=1
+        # elif FRdis<C_mid and L_dis>L_mid and R_dis<R_short:
+        #     #right side of wall
+        #     action=2
+        # elif action==1 and FRdis<C_mid and L_dis>R_dis:
+        #     #右からの左まわ
+        #     action=2
+        # elif action ==1 and FRdis>C_mid and L_dis>L_short:
+        #     action=0
+        # elif action==2 and FRdis<C_mid and L_dis<R_dis:
+        #     #右からの左まわ
+        #     action=1
             
         
 #        elif FRdis>50 and R_L_dis>20 and L_dis>40:
@@ -159,12 +204,22 @@ try:
             Accel(50)
         elif action==1:
             Steer(100,1)
+        elif action == 11:#右旋回小
+            Steer(50,1)
+        elif action == 12:#右旋回小
+            Steer(30,1)
         elif action==2:
             Steer(100,-1)
+        elif action == 21:#ひだり旋回小
+            Steer(50,-1)
+        elif action == 22:#ひだり旋回小
+            Steer(30,-1)
         
         elif action==3:
             steer_angle = (L_short-L_dis)/L_short*100
             Steer(100,1)
+        elif action == 4:
+            back(100)
             
         
         #距離データを配列に記録
@@ -179,3 +234,4 @@ except KeyboardInterrupt:
     togikai_drive.Accel(PWM_PARAM,pwm,time,0)
     togikai_drive.Steer(PWM_PARAM,pwm,time,0)
     GPIO.cleanup()
+
