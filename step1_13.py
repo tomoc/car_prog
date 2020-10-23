@@ -167,16 +167,32 @@ while True :
     t1 = t2
     t2 = time.time()
     t0 = t2 - t1
-    C_dis = Mesure(trig1,echo1)     #cal distance 今回値が400を超えたら400を採用要追加
-    L_dis = Mesure(trig2,echo2)     #cal distance
-    R_dis = Mesure(trig3,echo3)     #cal distance
-    LL_dis = Mesure(trig4,echo4)    #cal distance
-    RR_dis = Mesure(trig5,echo5)    #cal distance
     C_dis_prvs = C_dis              #store previos data cal distance
     L_dis_prvs = L_dis              #store previos data cal distance
     R_dis_prvs = R_dis              #store previos data cal distance
     LL_dis_prvs = LL_dis            #store previos data cal distance
     RR_dis_prvs = RR_dis            #store previos data cal distance
+    C_dis = Mesure(trig1,echo1)     #cal distance 今回値が400を超えたら400を採用要追加
+    L_dis = Mesure(trig2,echo2)     #cal distance
+    R_dis = Mesure(trig3,echo3)     #cal distance
+    LL_dis = Mesure(trig4,echo4)    #cal distance
+    RR_dis = Mesure(trig5,echo5)    #cal distance
+    # C_dis_prvs = C_dis              #store previos data cal distance
+    # L_dis_prvs = L_dis              #store previos data cal distance
+    # R_dis_prvs = R_dis              #store previos data cal distance
+    # LL_dis_prvs = LL_dis            #store previos data cal distance
+    # RR_dis_prvs = RR_dis            #store previos data cal distance
+    if abs(C_dis-C_dis_prvs)>200:
+        C_dis=(C_dis_prvs+C_dis)/2
+    if abs(L_dis-L_dis_prvs)>200:
+        L_dis=(L_dis_prvs+L_dis)/2
+    if abs(R_dis-R_dis_prvs)>200:
+        R_dis=(R_dis_prvs+R_dis)/2
+    if abs(LL_dis-LL_dis_prvs)>200:
+        LL_dis=(LL_dis_prvs+LL_dis)/2
+    if abs(RR_dis-RR_dis_prvs)>200:
+        RR_dis=(RR_dis_prvs+RR_dis)/2
+
 
 #######################
 ###### L R hikak ######

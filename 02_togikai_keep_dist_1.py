@@ -150,6 +150,12 @@ def keep_dist(RLdis,Ldis,angl1):
 try:
     while True:
         #Frセンサ距離
+        FRdis_prev = FRdis
+        L_dis_prev = L_dis
+        R_dis_prev = R_dis
+        R_L_dis_prev = R_L_dis
+        R_R_dis_prev = R_R_dis
+
         FRdis = togikai_ultrasonic.Mesure(GPIO,time,15,26)
         #FrLHセンサ距離
         L_dis = togikai_ultrasonic.Mesure(GPIO,time,13,24)
@@ -159,16 +165,125 @@ try:
         R_L_dis = togikai_ultrasonic.Mesure(GPIO,time,35,37)
         #RrRHセンサ距離
         R_R_dis = togikai_ultrasonic.Mesure(GPIO,time,36,38)
-        
+        if abs(FRdis-FRdis_prev)>200:
+            FRdis=FRdis_prev
+        if abs(L_dis-L_dis_prev)>200:
+            L_dis=L_dis_prev
+        if abs(R_dis-R_dis_prev)>200:
+            R_dis=R_dis_prev
+        if abs(R_L_dis-R_L_dis_prev)>200:
+            R_L_dis=R_L_dis_prev
+        if abs(R_R_dis-R_R_dis_prev)>200:
+            R_R_dis=R_R_dis_prev
+
+
+        #######################
+        ###### L R hikak ######
+        if L_dis > R_dis:
+            LR_judge = 1#turn left
+        else:
+            LR_judge = 2#turn right(include L_dis = R_dis)
+
+        ###### L R hikak end ######
+        ###########################
+
+        ###### LL RR cornerjudge  ###### 20190922
+        ################################ for steerchange
+        if R_L_dis + R_R_dis >80:
+            LL_RR_cj = 1
+        else:
+            LL_RR_cj = 2
+                
+        ###### LL RR cornerjudge  end###
+        ################################
+        #########################
+        ###### joken start ######
+        if L_dis > L_long and FRdis > C_long and R_dis > R_long:
+            joken = 1#すべてＯＫ
+        elif L_dis > L_long and FRdis > C_long and R_dis <= R_long and R_dis >= R_short:
+            joken = 2#右前がR_long以下
+        elif L_dis > L_long and FRdis > C_long and R_dis < R_short:
+            joken = 3#右前の距離がR_short以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis > C_long and R_dis > R_long:
+            joken = 4#左前がlong以下
+        elif L_dis < L_short and FRdis > C_long and R_dis > R_long:
+            joken = 5#左前がshort以下
+        elif L_dis > L_long and FRdis <= C_long and FRdis >= C_short and R_dis > R_long:
+            joken = 6#前がlong以下
+        elif L_dis > L_long and FRdis < C_short and R_dis > R_long:
+            joken = 7#前がshot以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis > C_long and R_dis <= R_long and R_dis >= R_short:
+            joken = 8#左がlog以下で右もlong以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis > C_long and R_dis < R_short:
+            joken = 9#左がlog以下で右がshort以下
+        elif L_dis < L_short and FRdis > C_long and R_dis <= R_long and R_dis >= R_short:
+            joken = 10#左がshort以下で右がlong以下
+        elif L_dis < L_short and FRdis > C_long and R_dis < R_short:
+            joken = 11#左右がshort以下
+        elif L_dis > L_long and FRdis <= C_long and FRdis >= C_short and R_dis <= R_long and R_dis >= R_short:
+            joken = 12#前がlong以下右がlong以下
+        elif L_dis > L_long and FRdis <= C_long and FRdis >= C_short and R_dis < R_short:
+            joken = 13#\#前がlong以下右がshort以下
+        elif L_dis > L_long and FRdis < C_short and R_dis <= R_long and R_dis >= R_short:
+            joken = 14#前がshort以下右がlong以下
+        elif L_dis > L_long and FRdis < C_short and R_dis < R_short:
+            joken = 15#前がlong以下右がshort以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis <= C_long and FRdis >= C_short and R_dis <= R_long and R_dis >= R_short:
+            joken = 16#すべてlong以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis <= C_long and FRdis >= C_short and R_dis < R_short:
+            joken = 17#右がshort以下他long以下
+        elif L_dis < L_short and FRdis <= C_long and FRdis >= C_short and R_dis <= R_long and R_dis >= R_short:
+            joken = 18#左がshort以下他がlong以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis < C_short and R_dis <= R_long and R_dis >= R_short:
+            joken = 19#前がshort以下他がlong以下
+        elif L_dis < L_short and FRdis <= C_long and FRdis >= C_short and R_dis < R_short:
+            joken = 20#左、右がshort以下前がlong以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis < C_short and R_dis < R_short:
+            joken = 21#前、右がshort以下、左がlong以下
+        elif L_dis < L_short and FRdis < C_short and R_dis <= R_long and R_dis >= R_short:
+            joken = 22#左、前がshort以下、右がlong以下
+        elif L_dis <= L_long and L_dis >= L_short and FRdis <= C_long and FRdis >= C_short and R_dis > R_long:
+            joken = 23#左、前がlong以下、RがOK
+        elif L_dis < L_short and FRdis <= C_long and FRdis >= C_short and R_dis > R_long:
+            joken = 24#左がshort以下、前がlong以下、右がOK
+        elif L_dis <= L_long and L_dis >= L_short and FRdis < C_short and R_dis > R_long:
+            joken = 25#左がlomg以下、前がshort以下、右がOK
+        elif L_dis < L_short and FRdis < C_short and R_dis > R_long:
+            joken = 26#左がshort以下、前がshort以下、右がOK
+        elif L_dis < L_short and FRdis < C_short and R_dis < R_short:
+            joken = 27#すべてshort以下
+        else:
+            joken = 99
+
+        #直進と第2カーブまで
         #if FRdis>C_mid:
         if count ==0:
             old_dist[0,0] = L_dis
             count = count+1
-        st_ang,st_direc = keep_dist(R_L_dis,L_dis,st_ang)
-        #Steer(st_ang,st_direc)
-        Steer_k(st_ang)
-        action =5
-    
+
+        if FRdis<=C_short and L_dis<=L_mid and R_dis <= R_mid:
+            if LR_judge == 1:
+                #左バック
+                back(100)
+                Steer_k(-50)
+                time.sleep(1.0)
+            else:
+                back(100)
+                Steer_k(50)
+                time.sleep(1.0)
+        elif FRdis>C_mid and L_dis>=L_mid and R_L_dis >= L_mid:#左の距離が大きく開けているとき
+            Steer_k(-100)
+
+        # elif FRdis>C_mid:
+        else:
+            st_ang,st_direc = keep_dist(R_L_dis,L_dis,st_ang)
+            #Steer(st_ang,st_direc)
+            Steer_k(st_ang)
+
+        #直角カーブ
+
+
+
         #elif count5 == 10:
         #    count5 = 0
         #   action = 0
